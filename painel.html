@@ -1,8 +1,208 @@
 <!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ContaLeve | Meu Painel</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+  </head>
   <body>
-    <header>
-      <img src="./assets/img/contaleve-logo.png" alt="Logo da ContaLeve" />
+    <header class="header-painel">
+      <img
+        src="./assets/img/contaleve-barras.png"
+        alt="Logo da ContaLeve"
+        class="icon-contaleve"
+      />
+      <h2>ContaLeve</h2>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="painel.html" aria-current="page">Painel</a></li>
+        </ul>
     </header>
+    <main>
+      <section class="hero hero-painel container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h2 class="h2-hero-subtitulo">Meu Painel</h2>
+            <p class="h2-hero-titulo">
+              Acompanhe suas finanças de forma simples.
+            </p>
+          </div>
+          <div class="input-group input-group-sm painel-mes-grupo">
+            <span class="input-group-text painel-mes-icone">
+              <i class="bi bi-calendar-check"></i>
+            </span>
+            <select class="form-select painel-btn-mes">
+              <option selected>Selecione o mês</option>
+              <option value="1">Janeiro / 2026</option>
+              <option value="2">Fevereiro / 2026</option>
+              <option value="3">Março / 2026</option>
+              <option value="4">Abril / 2026</option>
+              <option value="5">Maio / 2026</option>
+              <option value="6">Junho / 2026</option>
+              <option value="7">Julho / 2026</option>
+              <option value="8">Agosto / 2026</option>
+              <option value="9">Setembro / 2026</option>
+              <option value="10">Outubro / 2026</option>
+              <option value="11">Novembro / 2026</option>
+              <option value="12">Dezembro / 2026</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="recursos painel-resumo container pt-0 pb-2">
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <div class="card recurso-card receitas-card h-100">
+              <div class="card-body d-flex align-items-center gap-3 text-start">
+                <img
+                  src="./assets/img/contaleve-receita.png"
+                  alt="Ícone de receitas"
+                  class="icone-recurso"
+                />
+                <div class="recurso-conteudo">
+                  <p class="painel-p-titulo">Receitas</p>
+                  <h3 class="painel-h3-receitas">R$ 4.000,00</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card recurso-card despesas-card h-100">
+              <div class="card-body d-flex align-items-center gap-3 text-start">
+                <img
+                  src="./assets/img/contaleve-despesa.png"
+                  alt="Ícone de despesas"
+                  class="icone-recurso"
+                />
+                <div class="recurso-conteudo">
+                  <p class="painel-p-titulo">Despesas</p>
+                  <h3 class="painel-h3-despesas">R$ 2.000,00</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card recurso-card saldo-card h-100">
+              <div class="card-body d-flex align-items-center gap-3 text-start">
+                <img
+                  src="./assets/img/contaleve-saldo.png"
+                  alt="Ícone de saldo"
+                  class="icone-recurso"
+                />
+                <div class="recurso-conteudo">
+                  <p class="painel-p-titulo">Saldo Atual</p>
+                  <h3 class="painel-h3-saldo">R$ 2.000,00</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container py-3">
+        <div class="row">
+          <div class="col-12">
+            <div class="card recurso-card h-100">
+              <div class="card-body text-start">
+                <h3 class="mb-3">Novo Lançamento</h3>
+                <div class="painel-form-lancamento">
+                  <button
+                    class="btn btn-success btn-sm painel-btn-receita"
+                    onclick="novoLancamento('receita')"
+                  >
+                    <i class="bi bi-arrow-up"></i> Receita
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm painel-btn-despesa"
+                    onclick="novoLancamento('despesa')"
+                  >
+                    <i class="bi bi-arrow-down"></i> Despesa
+                  </button>
+                  <div class="campo-descricao">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      id="descricao"
+                      placeholder="Descrição (ex: Salário, Aluguel, Supermercado)"
+                    />
+                  </div>
+                  <div class="campo-valor">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="valor"
+                      placeholder="R$ 0,00"
+                      step="0.01"
+                    />
+                  </div>
+                  <button
+                    class="btn btn-destaque btn-sm painel-btn-adicionar"
+                    onclick="adicionarLancamento()"
+                  >
+                    <i class="bi bi-plus-circle-fill"></i> Adicionar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="container py-3">
+        <div class="card recurso-card h-100">
+          <div
+            class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3 text-start"
+          >
+            <h3 class="mb-0">Últimos Lançamentos</h3>
+            <button
+              class="btn btn-destaque btn-sm"
+              onclick="adicionarLancamento()"
+            >
+              <i class="bi bi-list-ul"></i> Ver Extrato Completo
+            </button>
+            <div class="row w-100 mt-2 fw-bold border-bottom pb-2">
+              <div class="col-3">Data</div>
+              <div class="col-3">Descrição</div>
+              <div class="col-3">Tipo</div>
+              <div class="col-3 text-end">Valor</div>
+            </div>
+            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+            </div>
+            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+            </div>
+            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+            </div>
+            <div class="row w-100 py-1" aria-hidden="true">
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+              <div class="col-3">&nbsp;</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </body>
 </html>
