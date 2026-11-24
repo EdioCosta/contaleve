@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/style.css" />
+    <script src="./js/app.js" defer></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
@@ -72,7 +73,7 @@
                 />
                 <div class="recurso-conteudo">
                   <p class="painel-p-titulo">Receitas</p>
-                  <h3 class="painel-h3-receitas">R$ 4.000,00</h3>
+                  <h3 id="total-receitas" class="painel-h3-receitas">R$ 0,00</h3>
                 </div>
               </div>
             </div>
@@ -87,7 +88,7 @@
                 />
                 <div class="recurso-conteudo">
                   <p class="painel-p-titulo">Despesas</p>
-                  <h3 class="painel-h3-despesas">R$ 2.000,00</h3>
+                  <h3 id="total-despesas" class="painel-h3-despesas">R$ 0,00</h3>
                 </div>
               </div>
             </div>
@@ -102,7 +103,7 @@
                 />
                 <div class="recurso-conteudo">
                   <p class="painel-p-titulo">Saldo Atual</p>
-                  <h3 class="painel-h3-saldo">R$ 2.000,00</h3>
+                  <h3 id="saldo-atual" class="painel-h3-saldo">R$ 0,00</h3>
                 </div>
               </div>
             </div>
@@ -115,17 +116,19 @@
           <div class="col-12">
             <div class="card recurso-card h-100">
               <div class="card-body text-start">
-                <h3 class="mb-3">Novo Lançamento</h3>
+                <h3 class="mb-3 titulo-lancamento">Novo Lançamento</h3>
                 <div class="painel-form-lancamento">
                   <button
+                  id="btn-receita"
+                  type="button"
                     class="btn btn-success btn-sm painel-btn-receita"
-                    onclick="novoLancamento('receita')"
                   >
                     <i class="bi bi-arrow-up"></i> Receita
                   </button>
                   <button
+                  id="btn-despesa"
+                  type="button"
                     class="btn btn-danger btn-sm painel-btn-despesa"
-                    onclick="novoLancamento('despesa')"
                   >
                     <i class="bi bi-arrow-down"></i> Despesa
                   </button>
@@ -147,8 +150,9 @@
                     />
                   </div>
                   <button
+                  id="btn-adicionar"
+                  type="button"
                     class="btn btn-destaque btn-sm painel-btn-adicionar"
-                    onclick="adicionarLancamento()"
                   >
                     <i class="bi bi-plus-circle-fill"></i> Adicionar
                   </button>
@@ -165,10 +169,11 @@
           >
             <h3 class="mb-0">Últimos Lançamentos</h3>
             <button
+              id="btn-extrato"
+              type="button"
               class="btn btn-destaque btn-sm"
-              onclick="adicionarLancamento()"
             >
-              <i class="bi bi-list-ul"></i> Ver Extrato Completo
+              <i class="bi bi-list-ul"></i> Definir Botao
             </button>
             <div class="row w-100 mt-2 fw-bold border-bottom pb-2">
               <div class="col-3">Data</div>
@@ -176,29 +181,10 @@
               <div class="col-3">Tipo</div>
               <div class="col-3 text-end">Valor</div>
             </div>
-            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-            </div>
-            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-            </div>
-            <div class="row w-100 py-1 border-bottom" aria-hidden="true">
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-            </div>
-            <div class="row w-100 py-1" aria-hidden="true">
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
-              <div class="col-3">&nbsp;</div>
+            <div id="lista-lancamentos" class="w-100" aria-live="polite">
+              <p class="text-muted mb-0">
+                Nenhum lançamento registrado.
+              </p>
             </div>
           </div>
         </div>
