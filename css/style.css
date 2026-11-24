@@ -1,11 +1,11 @@
-#login {
+/* #login {
   width: 300px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
-}
+} */
 
 :root {
   --cor-principal: #0d47a1;
@@ -213,6 +213,10 @@ section.hero.hero-sobre {
   font-weight: 600;
 }
 
+.titulo-lancamento {
+  color: var(--cor-principal);
+}
+
 .painel-p-titulo {
   font-size: 1.3rem;
   font-weight: 800;
@@ -248,31 +252,59 @@ footer p {
   font-size: 0.9rem;
 }
 
-.footer-sobre {
-  background-color: #eaedf0;
+/* Layout base, compartilhado por todos os rodapés (sem cor de fundo). */
+.footer-pagina {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+
+/* Cores de fundo por página. */
+.footer-home {
+  background-color: var(--cor-principal);
+}
+
+.footer-sobre {
+  background-color: #eaedf0;
+}
+
+.footer-contato {
+  background-color: #eaedf0;
+}
+
+/* Blocos internos reutilizados por todos os rodapés. */
+.footer-pagina-identidade {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
   text-align: left;
 }
 
-.footer-sobre-identidade,
-.footer-sobre-redes {
+.footer-pagina-redes {
   display: flex;
   align-items: center;
-}
-
-.footer-sobre-identidade {
-  gap: 12px;
-}
-
-.footer-sobre-redes {
   gap: 1rem;
   color: #000000;
   font-size: 1.5rem;
 }
 
+.footer-pagina > .footer-copyright {
+  margin-left: auto;
+  text-align: right;
+}
+
+/* Home: título e copyright brancos. */
+.footer-home .footer-titulo {
+  color: #ffffff;
+}
+
+.footer-home > .footer-copyright {
+  color: #ffffff;
+}
+
+/* Sobre: título na cor principal e textos em preto. */
 .footer-sobre h3 {
   color: var(--cor-principal);
 }
@@ -281,46 +313,51 @@ footer p {
   color: black;
 }
 
-.footer-sobre > .footer-copyright {
-  margin-left: auto;
-  text-align: right;
+/* Contato: título na cor principal e textos em preto. */
+.footer-contato h3 {
+  color: var(--cor-principal);
+}
+
+.footer-contato p {
+  color: black;
 }
 
 .icone-contaleve-footer {
   width: 50px;
   height: 50px;
   object-fit: contain;
+  background-color: transparent
 }
 
 @media (max-width: 767.98px) {
-  .footer-sobre {
+  .footer-pagina {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .footer-sobre-pagina {
+  .footer-home {
     flex-direction: row;
     align-items: center;
   }
 
-  .footer-sobre-identidade {
+  .footer-pagina-identidade {
     flex-wrap: wrap;
   }
 
-  .footer-sobre-redes {
+  .footer-pagina-redes {
     align-self: flex-end;
   }
 
-  .footer-sobre > .footer-copyright {
+  .footer-pagina > .footer-copyright {
     align-self: flex-end;
   }
 
-  .footer-sobre-pagina .footer-sobre-identidade {
+  .footer-home .footer-pagina-identidade {
     flex-wrap: nowrap;
     gap: 0.5rem;
   }
 
-  .footer-sobre-pagina > .footer-copyright {
+  .footer-home > .footer-copyright {
     max-width: 45%;
     align-self: center;
   }
@@ -349,17 +386,32 @@ main {
 
 .hero .sobre-badge {
   display: inline-block;
-  padding: 0.3rem 0.7rem;
+  position: relative;
+  top: -16px;
+  padding: 0.4rem 1.2rem;
   border-radius: 999px;
   background-color: #d0e1f2;
   color: var(--cor-principal);
-  font-size: 0.8rem;
+  font-size: 1rem;
   text-transform: uppercase;
+}
+
+.hero-contato .sobre-badge {
+  top: -36px;
+}
+
+.hero-contato .h2-hero-titulo {
+  position: relative;
+  top: -12px;
 }
 
 .h2-hero-titulo {
   font-weight: 600;
   color: var(--cor-principal);
+}
+
+.hero .h2-hero-descricao {
+  font-size: 1.2rem;
 }
 
 .hero .hero-titulo {
@@ -443,20 +495,23 @@ main {
 .painel-btn-mes {
   width: 160px;
   flex: 1 1 auto;
-  color: #ffffff;
-  background-color: var(--cor-principal);
-  border: 1px solid #88b9f9;
+  color: black;
+  background-color: transparent;
+  border: 0;
 }
 
 .painel-mes-grupo {
   width: 220px;
   margin-left: auto;
+  border: 1px solid #88b9f9;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .painel-mes-icone {
-  color: #ffffff;
-  background-color: var(--cor-principal);
-  border-color: #88b9f9;
+  color: #000000;
+  background-color: transparent;
+  border: 0;
 }
 
 .btn-destaque {
@@ -525,11 +580,21 @@ main {
   width: 70px;
   height: 70px;
   object-fit: contain;
+  margin-left: 20px;
+  margin-bottom: 15px;
 }
 
 .proposito-card {
   background-color: #d0e1f2;
   border-radius: 10px;
+}
+
+@media (min-width: 768px) {
+  .proposito-conteudo {
+    border-left: 3px solid #a9bdd6;
+    padding-left: 1.5rem;
+    margin-left: -32px;
+  }
 }
 
 .pronto-card {
@@ -690,3 +755,4 @@ main {
   color: var(--cor-principal);
   font-weight: 700;
 }
+
