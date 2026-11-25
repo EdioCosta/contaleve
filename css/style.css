@@ -156,6 +156,15 @@ header nav a[aria-current="page"] {
   border: 0;
 }
 
+@media (max-width: 767.98px) {
+  header,
+  .header-painel {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    padding: 15px 20px;
+  }
+}
+
 .hero {
   padding-top: 50px;
   padding-bottom: 50px;
@@ -415,6 +424,16 @@ section.hero.hero-sobre {
 
 .titulo-lancamento {
   color: var(--cor-principal);
+}
+
+.painel-lista-cabecalho > :not(:last-child),
+#lista-lancamentos .row > :not(:last-child) {
+  padding-right: 0.75rem;
+}
+
+.painel-lista-cabecalho > *,
+#lista-lancamentos .row > * {
+  overflow-wrap: break-word;
 }
 
 .painel-p-titulo {

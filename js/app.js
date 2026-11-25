@@ -99,6 +99,18 @@ if (
       currency: "BRL",
     }).format(valor);
 
+  const aplicarMascaraMoeda = (texto) => {
+    const digitos = String(texto).replace(/\D/g, "");
+
+    return digitos === "" ? "" : formatarMoeda(Number(digitos) / 100);
+  };
+
+  const converterValorParaNumero = (texto) => {
+    const digitos = String(texto).replace(/\D/g, "");
+
+    return digitos === "" ? NaN : Number(digitos) / 100;
+  };
+
   const normalizarData = (data) =>
     new Date(data.getFullYear(), data.getMonth(), data.getDate());
 
@@ -294,13 +306,13 @@ if (
 
     visiveis.forEach((item) => {
       const linha = document.createElement("div");
-      linha.className = "row w-100 py-2 border-bottom align-items-center";
+      linha.className = "row g-0 w-100 py-2 border-bottom align-items-center";
 
-      const colunaData = criarColuna("col-3", item.data);
-      const colunaDescricao = criarColuna("col-3", item.descricao);
+      const colunaData = criarColuna("col-6 col-md-3", item.data);
+      const colunaDescricao = criarColuna("col-6 col-md-3", item.descricao);
 
       const colunaTipo = document.createElement("div");
-      colunaTipo.className = "col-3";
+      colunaTipo.className = "col-6 col-md-3";
 
       const etiqueta = document.createElement("span");
       etiqueta.className =
@@ -312,7 +324,7 @@ if (
       colunaTipo.appendChild(etiqueta);
 
       const colunaValor = document.createElement("div");
-      colunaValor.className = "col-3 text-end fw-semibold";
+      colunaValor.className = "col-6 col-md-3 text-md-end fw-semibold";
       colunaValor.classList.add(
         item.tipo === "receita" ? "text-success" : "text-danger",
       );
@@ -327,7 +339,7 @@ if (
   function adicionarLancamento() {
     const descricao = descricaoInput.value.trim();
     const valorInformado = valorInput.value.trim();
-    const valor = Number(valorInformado);
+    const valor = converterValorParaNumero(valorInformado);
 
     if (!descricao) {
       alert("Informe a descrição do lançamento.");
@@ -375,6 +387,10 @@ if (
   });
 
   adicionarButton.addEventListener("click", adicionarLancamento);
+
+  valorInput.addEventListener("input", () => {
+    valorInput.value = aplicarMascaraMoeda(valorInput.value);
+  });
 
   extratoButton.addEventListener("click", () => {
     sincronizarModalComFiltro();
