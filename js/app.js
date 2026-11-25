@@ -1,3 +1,80 @@
+const ALERTA_TIPOS = {
+  aviso: { titulo: "Atenção", icone: "bi-exclamation-triangle-fill" },
+  erro: { titulo: "Algo deu errado", icone: "bi-x-circle-fill" },
+  sucesso: { titulo: "Tudo certo!", icone: "bi-check-circle-fill" },
+  info: { titulo: "Informação", icone: "bi-info-circle-fill" },
+};
+
+let alertaDialog = null;
+
+function criarAlertaDialog() {
+  const dialog = document.createElement("dialog");
+  dialog.className = "alerta-modal";
+  dialog.setAttribute("aria-labelledby", "alerta-modal-titulo");
+  dialog.setAttribute("aria-describedby", "alerta-modal-mensagem");
+  dialog.innerHTML = `
+    <div class="alerta-modal-conteudo">
+      <div class="alerta-modal-icone" aria-hidden="true"><i class="bi"></i></div>
+      <h2 class="alerta-modal-titulo" id="alerta-modal-titulo"></h2>
+      <p class="alerta-modal-mensagem" id="alerta-modal-mensagem"></p>
+      <button type="button" class="btn btn-principal alerta-modal-botao">OK</button>
+    </div>
+  `;
+
+  dialog
+    .querySelector(".alerta-modal-botao")
+    .addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) {
+      dialog.close();
+    }
+  });
+
+  return dialog;
+}
+
+function mostrarAlerta(mensagem, opcoes = {}) {
+  const tipo = ALERTA_TIPOS[opcoes.tipo] ? opcoes.tipo : "aviso";
+  const config = ALERTA_TIPOS[tipo];
+
+  if (!alertaDialog) {
+    alertaDialog = criarAlertaDialog();
+  }
+
+  const modalAberto = document.querySelector(".modal.show");
+  const destino = modalAberto || document.body;
+  if (alertaDialog.parentElement !== destino) {
+    destino.appendChild(alertaDialog);
+  }
+
+  alertaDialog.dataset.tipo = tipo;
+  alertaDialog.querySelector(".alerta-modal-icone i").className =
+    `bi ${config.icone}`;
+  alertaDialog.querySelector(".alerta-modal-titulo").textContent =
+    opcoes.titulo || config.titulo;
+  alertaDialog.querySelector(".alerta-modal-mensagem").textContent = mensagem;
+
+  return new Promise((resolve) => {
+    alertaDialog.addEventListener(
+      "close",
+      () => {
+        if (opcoes.focar) {
+          opcoes.focar.focus();
+        }
+        resolve();
+      },
+      { once: true },
+    );
+
+    if (alertaDialog.open) {
+      alertaDialog.close();
+    }
+    alertaDialog.showModal();
+    alertaDialog.querySelector(".alerta-modal-botao").focus();
+  });
+}
+
 const totalReceitasEl = document.getElementById("total-receitas");
 const totalDespesasEl = document.getElementById("total-despesas");
 const saldoAtualEl = document.getElementById("saldo-atual");
@@ -18,6 +95,9 @@ const modalPeriodoEl = document.getElementById("modal-periodo");
 const periodoCustomCampos = document.getElementById("periodo-custom-campos");
 const periodoDeInput = document.getElementById("periodo-de");
 const periodoAteInput = document.getElementById("periodo-ate");
+const dataPicker = document.getElementById("data-picker");
+const periodoDePicker = document.getElementById("periodo-de-picker");
+const periodoAtePicker = document.getElementById("periodo-ate-picker");
 const periodoAplicarButton = document.getElementById("periodo-aplicar");
 const periodoLimparButton = document.getElementById("periodo-limpar");
 
@@ -85,8 +165,9 @@ if (
     } catch (erro) {
       console.error("Erro ao salvar lançamentos:", erro);
 
-      alert(
-        "Não foi possível salvar os dados no navegador. Tente novamente."
+      mostrarAlerta(
+        "Não foi possível salvar os dados no navegador. Tente novamente.",
+        { tipo: "erro" },
       );
 
       return false;
@@ -127,22 +208,32 @@ if (
     return Number.isNaN(data.getTime()) ? null : data;
   }
 
-  function parseDataISO(texto) {
-    const [ano, mes, dia] = String(texto).split("-").map(Number);
-    const data = new Date(ano, mes - 1, dia);
+  const aplicarMascaraData = (texto) => {
+    const digitos = String(texto).replace(/\D/g, "").slice(0, 8);
 
-    return Number.isNaN(data.getTime()) ? null : data;
-  }
-
-  const formatarDataInput = (iso) => {
-    const [ano, mes, dia] = iso.split("-");
-    return `${dia}/${mes}/${ano}`;
+    return [digitos.slice(0, 2), digitos.slice(2, 4), digitos.slice(4, 8)]
+      .filter((parte) => parte !== "")
+      .join("/");
   };
 
-  const dataParaISO = (data) => {
-    const mes = String(data.getMonth() + 1).padStart(2, "0");
-    const dia = String(data.getDate()).padStart(2, "0");
-    return `${data.getFullYear()}-${mes}-${dia}`;
+  const dataEhValida = (texto) => {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+      return false;
+    }
+
+    const data = parseDataBR(texto);
+
+    if (!data) {
+      return false;
+    }
+
+    const [dia, mes, ano] = texto.split("/").map(Number);
+
+    return (
+      data.getDate() === dia &&
+      data.getMonth() === mes - 1 &&
+      data.getFullYear() === ano
+    );
   };
 
   const PERIODOS_EM_DIAS = { "7d": 7, "15d": 15, "30d": 30 };
@@ -159,8 +250,8 @@ if (
     }
 
     if (filtro.tipo === "custom") {
-      const de = filtro.de ? parseDataISO(filtro.de) : null;
-      const ate = filtro.ate ? parseDataISO(filtro.ate) : null;
+      const de = filtro.de ? parseDataBR(filtro.de) : null;
+      const ate = filtro.ate ? parseDataBR(filtro.ate) : null;
 
       return lancamentos.filter((item) => {
         const data = parseDataBR(item.data);
@@ -207,8 +298,7 @@ if (
     }
 
     if (filtro.tipo === "custom") {
-      extratoRotuloEl.textContent =
-        `${formatarDataInput(filtro.de)} – ${formatarDataInput(filtro.ate)}`;
+      extratoRotuloEl.textContent = `${filtro.de} – ${filtro.ate}`;
       return;
     }
 
@@ -340,16 +430,26 @@ if (
     const descricao = descricaoInput.value.trim();
     const valorInformado = valorInput.value.trim();
     const valor = converterValorParaNumero(valorInformado);
+    const dataInformada = dataInput.value.trim();
 
     if (!descricao) {
-      alert("Informe a descrição do lançamento.");
-      descricaoInput.focus();
+      mostrarAlerta("Informe a descrição do lançamento.", {
+        focar: descricaoInput,
+      });
       return;
     }
 
     if (!valorInformado || !Number.isFinite(valor) || valor <= 0) {
-      alert("Informe um valor válido maior que zero.");
-      valorInput.focus();
+      mostrarAlerta("Informe um valor válido maior que zero.", {
+        focar: valorInput,
+      });
+      return;
+    }
+
+    if (!dataEhValida(dataInformada)) {
+      mostrarAlerta("Informe a data completa, no formato dd/mm/aaaa.", {
+        focar: dataInput,
+      });
       return;
     }
 
@@ -357,9 +457,7 @@ if (
       descricao: descricao,
       valor: Math.round(valor * 100) / 100,
       tipo: tipoSelecionado,
-      data: dataInput.value
-        ? formatarDataInput(dataInput.value)
-        : new Date().toLocaleDateString("pt-BR"),
+      data: dataInformada,
     };
 
     lancamentos.unshift(lancamento);
@@ -373,6 +471,7 @@ if (
 
     descricaoInput.value = "";
     valorInput.value = "";
+    dataInput.value = new Date().toLocaleDateString("pt-BR");
     descricaoInput.focus();
   }
 
@@ -391,6 +490,31 @@ if (
   valorInput.addEventListener("input", () => {
     valorInput.value = aplicarMascaraMoeda(valorInput.value);
   });
+
+  [dataInput, periodoDeInput, periodoAteInput].forEach((campoData) => {
+    campoData.addEventListener("input", () => {
+      campoData.value = aplicarMascaraData(campoData.value);
+    });
+  });
+
+  const ligarCalendario = (picker, campoTexto) => {
+    if (!picker || !campoTexto) {
+      return;
+    }
+
+    picker.addEventListener("change", () => {
+      if (!picker.value) {
+        return;
+      }
+
+      const [ano, mes, dia] = picker.value.split("-");
+      campoTexto.value = `${dia}/${mes}/${ano}`;
+    });
+  };
+
+  ligarCalendario(dataPicker, dataInput);
+  ligarCalendario(periodoDePicker, periodoDeInput);
+  ligarCalendario(periodoAtePicker, periodoAteInput);
 
   extratoButton.addEventListener("click", () => {
     sincronizarModalComFiltro();
@@ -415,21 +539,23 @@ if (
     );
 
     if (!selecionado) {
-      alert("Selecione um período.");
+      mostrarAlerta("Selecione um período.");
       return;
     }
 
     if (selecionado.value === "custom") {
-      const de = periodoDeInput.value;
-      const ate = periodoAteInput.value;
+      const de = periodoDeInput.value.trim();
+      const ate = periodoAteInput.value.trim();
 
-      if (!de || !ate) {
-        alert("Informe as datas inicial e final.");
+      if (!dataEhValida(de) || !dataEhValida(ate)) {
+        mostrarAlerta(
+          "Informe as datas inicial e final completas, no formato dd/mm/aaaa.",
+        );
         return;
       }
 
-      if (de > ate) {
-        alert("A data inicial não pode ser maior que a data final.");
+      if (parseDataBR(de) > parseDataBR(ate)) {
+        mostrarAlerta("A data inicial não pode ser maior que a data final.");
         return;
       }
 
@@ -455,7 +581,7 @@ if (
     bootstrap.Modal.getOrCreateInstance(modalPeriodoEl).hide();
   });
 
-  dataInput.value = dataParaISO(new Date());
+  dataInput.value = new Date().toLocaleDateString("pt-BR");
   atualizarTipoSelecionado();
   atualizarRotuloFiltro();
   atualizarResumoFinanceiro();
@@ -474,10 +600,11 @@ if (contatoForm && contatoFeedback) {
       return;
     }
 
-    contatoFeedback.classList.remove("d-none");
-    contatoFeedback.classList.add("alert-success");
-    contatoFeedback.textContent =
-      "Formulário validado com sucesso! Nossa equipe fara contato com você em breve.";
+    contatoFeedback.classList.add("d-none");
+    mostrarAlerta(
+      "Formulário validado com sucesso! Nossa equipe fará contato com você em breve.",
+      { tipo: "sucesso" },
+    );
 
     contatoForm.reset();
   });
