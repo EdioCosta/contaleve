@@ -132,11 +132,13 @@
                   </div>
                   <div class="campo-valor">
                     <input
-                      type="number"
+                      type="text"
                       class="form-control form-control-sm"
                       id="valor"
+                      inputmode="numeric"
+                      autocomplete="off"
                       placeholder="R$ 0,00"
-                      step="0.01"
+                      aria-label="Valor do lançamento"
                     />
                   </div>
                   <div class="campo-data">
@@ -174,11 +176,13 @@
               <i class="bi bi-list-ul"></i>
               <span id="btn-extrato-rotulo">Selecione o período</span>
             </button>
-            <div class="row w-100 mt-2 fw-bold border-bottom pb-2">
-              <div class="col-3">Data</div>
-              <div class="col-3">Descrição</div>
-              <div class="col-3">Tipo</div>
-              <div class="col-3 text-end">Valor</div>
+            <div
+              class="row g-0 w-100 mt-2 fw-bold border-bottom pb-2 painel-lista-cabecalho"
+            >
+              <div class="col-6 col-md-3">Data</div>
+              <div class="col-6 col-md-3">Descrição</div>
+              <div class="col-6 col-md-3">Tipo</div>
+              <div class="col-6 col-md-3 text-md-end">Valor</div>
             </div>
             <div id="lista-lancamentos" class="w-100" aria-live="polite">
               <p class="text-muted mb-0">
